@@ -1,1 +1,17 @@
-
+[
+    {
+        "id": 1,
+        "title": "SUBWAY SURFERS: GREECE 2025",
+        "description": "Полное описание игры. Здесь можно рассказать об особенностях, управлении, сюжете и всем, что нужно знать игроку перед запуском.",
+        "creator": "SYBO Games",
+        "genre": "Runner",
+        "icon": "https://static.wikia.nocookie.net/subwaysurf/images/3/39/Greece2025Icon.png/revision/latest/scale-to-width-down/250?cb=20250818071003",
+        "screenshots": [
+            "https://subwaygame.io/wp-content/uploads/2025/10/subway-surfers-greece-2025.jpg",
+            "https://subwaygame.io/wp-content/uploads/2025/10/subway-surfers-greece-2025.jpg",
+            "https://subwaygame.io/wp-content/uploads/2025/10/subway-surfers-greece-2025.jpg"
+        ],
+        "orientation": "portrait",
+        "gameUrl": "https://g.igroutka.ru/games/164/M8s6wA7na5cV4jIX/13/subway_surfers_greece/"
+    }
+]
