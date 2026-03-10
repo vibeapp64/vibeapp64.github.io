@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VibeApp | Главная</title>
+    <style>
+        /* --- БАЗОВЫЕ СТИЛИ (ПОЛНОСТЬЮ ИЗ ВАШЕГО ФАЙЛА) --- */
+        :root { /* ... все переменные темы из вашего файла ... */
+            --bg-color: var(--tg-theme-bg-color, #ffffff);
+            --text-color: var(--tg-theme-text-color, #000000);
+            --hint-color: var(--tg-theme-hint-color, #999999);
+            --link-color: var(--tg-theme-link-color, #2481cc);
+            --button-color: var(--tg-theme-button-color, #40a7e3);
+            --button-text-color: var(--tg-theme-button-text-color, #ffffff);
+            --secondary-bg-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            --header-bg-color: var(--tg-theme-header-bg-color, #ffffff);
+            --accent-text-color: var(--tg-theme-accent-text-color, #40a7e3);
+            --section-bg-color: var(--tg-theme-section-bg-color, #ffffff);
+            --section-separator-color: var(--tg-theme-section-separator-color, #e0e0e0);
+            --subtitle-text-color: var(--tg-theme-subtitle-text-color, #666666);
+            --destructive-text-color: var(--tg-theme-destructive-text-color, #e34a4a);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-color); color: var(--text-color); min-height: 100vh;
+            display: flex; flex-direction: column; line-height: 1.4; font-size: 16px;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+        }
+        .app-container { max-width: 500px; margin: 0 auto; width: 100%; padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+        .header-title { font-size: 28px; font-weight: 700; background: linear-gradient(135deg, var(--button-color) 0%, var(--accent-text-color) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .header-badge { background: var(--secondary-bg-color); padding: 6px 12px; border-radius: 20px; font-size: 14px; color: var(--hint-color); display: flex; align-items: center; gap: 4px; }
+        .section { background: var(--secondary-bg-color); border-radius: 24px; overflow: hidden; border: 1px solid var(--section-separator-color); }
+        .section-header { padding: 16px 20px; border-bottom: 1px solid var(--section-separator-color); display: flex; align-items: center; justify-content: space-between; }
+        .section-title { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .section-title::before { content: "●"; color: var(--button-color); font-size: 24px; }
+        .section-content { padding: 20px; }
+        .btn { border: none; background: var(--button-color); color: var(--button-text-color); padding: 16px 24px; border-radius: 20px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(64, 167, 227, 0.2); }
+        .btn:active { transform: scale(0.96); opacity: 0.8; }
+        .btn-secondary { background: var(--bg-color); color: var(--text-color); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); border: 1px solid var(--section-separator-color); }
+        .status-bar { /* ... стили статус-бара из вашего файла ... */
+            position: fixed; bottom: 20px; left: 16px; right: 16px; max-width: 500px; margin: 0 auto;
+            background: var(--secondary-bg-color); border-radius: 30px; padding: 14px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            backdrop-filter: blur(10px); border: 1px solid var(--section-separator-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); transform: translateY(100px);
+            transition: transform 0.3s ease; z-index: 1000;
+        }
+        .status-bar.visible { transform: translateY(0); }
+        .status-message { display: flex; align-items: center; gap: 8px; }
+        .status-icon { width: 24px; height: 24px; border-radius: 12px; background: var(--button-color); color: var(--button-text-color); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .status-text { font-weight: 500; }
+        .status-close { background: none; border: none; color: var(--hint-color); font-size: 20px; cursor: pointer; padding: 4px 8px; }
+        @media (max-width: 400px) { /* ... адаптивность ... */ }
+
+        /* --- НОВЫЕ СТИЛИ ДЛЯ МАГАЗИНА ИГР --- */
+        .search-box {
+            width: 100%; padding: 12px 16px; border-radius: 24px; border: 1px solid var(--section-separator-color);
+            background: var(--secondary-bg-color); color: var(--text-color); font-size: 16px;
+            outline: none; transition: border-color 0.2s;
+        }
+        .search-box:focus { border-color: var(--button-color); }
+
+        /* Карусель баннеров */
+        .banners-container { overflow-x: auto; display: flex; gap: 12px; padding: 4px 0 12px; scrollbar-width: none; -ms-overflow-style: none; }
+        .banners-container::-webkit-scrollbar { display: none; }
+        .banner-card {
+            flex: 0 0 85%; background: linear-gradient(145deg, var(--button-color), var(--accent-text-color));
+            border-radius: 24px; padding: 20px; color: white; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: space-between; min-height: 160px;
+            background-size: cover; background-position: center; text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .banner-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); }
+        .banner-title, .banner-button { position: relative; z-index: 1; }
+        .banner-title { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+        .banner-button {
+            align-self: flex-start; background: rgba(255,255,255,0.25); backdrop-filter: blur(5px);
+            padding: 8px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.5);
+            font-weight: 600; text-decoration: none; color: white;
+        }
+
+        /* Категории */
+        .categories-grid { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 0; }
+        .category-chip {
+            background: var(--bg-color); border: 1px solid var(--section-separator-color);
+            border-radius: 30px; padding: 8px 16px; font-size: 14px; font-weight: 500;
+            cursor: pointer; transition: all 0.2s; color: var(--text-color);
+        }
+        .category-chip.active { background: var(--button-color); color: var(--button-text-color); border-color: var(--button-color); }
+
+        /* Сетка игр */
+        .games-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 8px 0; }
+        .game-card {
+            background: var(--bg-color); border-radius: 20px; overflow: hidden;
+            border: 1px solid var(--section-separator-color); cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .game-card:active { transform: scale(0.97); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .game-icon {
+            width: 100%; aspect-ratio: 1/1; background: var(--secondary-bg-color);
+            display: flex; align-items: center; justify-content: center; font-size: 40px;
+            color: var(--hint-color); object-fit: cover;
+        }
+        .game-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .game-info { padding: 12px; }
+        .game-title { font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .game-creator { font-size: 12px; color: var(--hint-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .loading { text-align: center; padding: 40px; color: var(--hint-color); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Хедер VibeApp -->
+        <div class="header">
+            <h1 class="header-title">VibeApp</h1>
+            <div class="header-badge">beta</div>
+        </div>
+
+        <!-- Поиск -->
+        <input type="text" class="search-box" id="searchInput" placeholder="Поиск игр..." autocomplete="off">
+
+        <!-- Секция баннеров -->
+        <div class="section">
+            <div class="section-header"><h2 class="section-title">Актуальное</h2></div>
+            <div class="section-content" style="padding-top: 0;">
+                <div class="banners-container" id="bannersContainer"></div>
+            </div>
+        </div>
+
+        <!-- Секция категорий -->
+        <div class="section">
+            <div class="section-header"><h2 class="section-title">Категории</h2></div>
+            <div class="section-content" style="padding-top: 0;">
+                <div class="categories-grid" id="categoriesContainer"></div>
+            </div>
+        </div>
+
+        <!-- Секция игр -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Игры</h2>
+                <span style="color: var(--hint-color); font-size: 14px;" id="gamesCount">загрузка...</span>
+            </div>
+            <div class="section-content">
+                <div class="games-grid" id="gamesContainer"></div>
+                <div id="loadingGames" class="loading">Загрузка игр...</div>
+            </div>
+        </div>
+
+        <!-- Статус бар -->
+        <div class="status-bar" id="statusBar">
+            <div class="status-message"><span class="status-icon" id="statusIcon">✓</span><span class="status-text" id="statusText">Готово</span></div>
+            <button class="status-close" onclick="hideStatus()">✕</button>
+        </div>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // --- ИНИЦИАЛИЗАЦИЯ TELEGRAM ---
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.disableVerticalSwipes();
+        tg.ready();
+        tg.MainButton.hide();
+
+        // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
+        let allGames = [];
+        let banners = [];
+        let categories = [];
+        let activeCategory = 'Все';
+        let currentSearchTerm = '';
+
+        // --- ФУНКЦИИ UI (из вашего файла) ---
+        function applyTelegramTheme() { /* ... как в вашем файле ... */
+            const style = document.documentElement.style;
+            style.setProperty('--bg-color', tg.themeParams.bg_color || '#ffffff');
+            style.setProperty('--text-color', tg.themeParams.text_color || '#000000');
+            style.setProperty('--hint-color', tg.themeParams.hint_color || '#999999');
+            style.setProperty('--link-color', tg.themeParams.link_color || '#2481cc');
+            style.setProperty('--button-color', tg.themeParams.button_color || '#40a7e3');
+            style.setProperty('--button-text-color', tg.themeParams.button_text_color || '#ffffff');
+            style.setProperty('--secondary-bg-color', tg.themeParams.secondary_bg_color || '#f0f0f0');
+        }
+        applyTelegramTheme();
+        tg.onEvent('themeChanged', applyTelegramTheme);
+
+        function showStatus(message, type = 'normal') { /* ... как в вашем файле ... */
+            const statusBar = document.getElementById('statusBar');
+            const statusText = document.getElementById('statusText');
+            const statusIcon = document.getElementById('statusIcon');
+            statusText.textContent = message;
+            statusIcon.style.background = type === 'success' ? 'var(--button-color)' : (type === 'error' ? 'var(--destructive-text-color)' : 'var(--hint-color)');
+            statusIcon.textContent = type === 'success' ? '✓' : (type === 'error' ? '⚠' : 'ℹ');
+            statusBar.classList.add('visible');
+            if (window.statusTimeout) clearTimeout(window.statusTimeout);
+            window.statusTimeout = setTimeout(hideStatus, 3000);
+        }
+        function hideStatus() { document.getElementById('statusBar').classList.remove('visible'); }
+
+        // --- ЗАГРУЗКА ДАННЫХ ---
+        async function loadBanners() {
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/vibeapp64/vibeapp64.github.io/refs/heads/main/apps/banners.json');
+                banners = await response.json();
+                renderBanners();
+            } catch (error) {
+                console.error('Ошибка загрузки баннеров:', error);
+                document.getElementById('bannersContainer').innerHTML = '<div style="padding:20px; color:var(--hint-color)">Не удалось загрузить баннеры</div>';
+            }
+        }
+
+        async function loadGames() {
+            const loadingEl = document.getElementById('loadingGames');
+            const gamesContainer = document.getElementById('gamesContainer');
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/vibeapp64/vibeapp64.github.io/refs/heads/main/apps/games.json');
+                allGames = await response.json();
+                
+                // Извлекаем уникальные категории (жанры)
+                const genreSet = new Set(allGames.map(game => game.genre));
+                categories = ['Все', ...Array.from(genreSet)];
+                
+                renderCategories();
+                filterAndRenderGames();
+                loadingEl.style.display = 'none';
+            } catch (error) {
+                console.error('Ошибка загрузки игр:', error);
+                loadingEl.textContent = 'Ошибка загрузки';
+                gamesContainer.innerHTML = '<div style="grid-column:span2; text-align:center; color:var(--hint-color); padding:40px;">Не удалось загрузить игры</div>';
+            }
+        }
+
+        // --- ОТОБРАЖЕНИЕ ---
+        function renderBanners() {
+            const container = document.getElementById('bannersContainer');
+            if (!banners.length) {
+                container.innerHTML = '<div style="padding:20px; color:var(--hint-color)">Нет баннеров</div>';
+                return;
+            }
+            container.innerHTML = banners.map(banner => `
+                <div class="banner-card" style="background-image: url('${banner.image}');">
+                    <div class="banner-title">${banner.title}</div>
+                    <a href="${banner.buttonLink}" class="banner-button" target="_blank" onclick="event.stopPropagation()">${banner.buttonText}</a>
+                </div>
+            `).join('');
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = categories.map(cat => `
+                <span class="category-chip ${activeCategory === cat ? 'active' : ''}" onclick="window.selectCategory('${cat}')">${cat}</span>
+            `).join('');
+        }
+
+        function filterAndRenderGames() {
+            const container = document.getElementById('gamesContainer');
+            const gamesCountSpan = document.getElementById('gamesCount');
+            
+            let filtered = allGames;
+            
+            // Фильтр по категории
+            if (activeCategory !== 'Все') {
+                filtered = filtered.filter(game => game.genre === activeCategory);
+            }
+            
+            // Фильтр по поиску
+            if (currentSearchTerm.trim() !== '') {
+                const term = currentSearchTerm.toLowerCase();
+                filtered = filtered.filter(game => 
+                    game.title.toLowerCase().includes(term) || 
+                    game.description.toLowerCase().includes(term) ||
+                    game.creator.toLowerCase().includes(term)
+                );
+            }
+            
+            gamesCountSpan.textContent = `${filtered.length} игр`;
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="grid-column:span2; text-align:center; color:var(--hint-color); padding:40px;">Ничего не найдено</div>';
+                return;
+            }
+            
+            container.innerHTML = filtered.map(game => `
+                <div class="game-card" onclick="window.openGame('${game.id}')">
+                    <div class="game-icon">
+                        <img src="${game.icon}" alt="${game.title}" onerror="this.parentElement.innerHTML='🎮'; this.parentElement.style.fontSize='40px';">
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">${game.title}</div>
+                        <div class="game-creator">${game.creator}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- ОБРАБОТЧИКИ ---
+        window.selectCategory = (category) => {
+            activeCategory = category;
+            renderCategories();
+            filterAndRenderGames();
+            tg.HapticFeedback.impactOccurred('light');
+        };
+
+        window.openGame = (gameId) => {
+            tg.HapticFeedback.impactOccurred('medium');
+            window.location.href = `game.html?id=${gameId}`;
+        };
+
+        // Поиск с debounce
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            clearTimeout(window.searchTimeout);
+            window.searchTimeout = setTimeout(() => {
+                currentSearchTerm = e.target.value;
+                filterAndRenderGames();
+                tg.HapticFeedback.impactOccurred('light');
+            }, 300);
+        });
+
+        // --- СТАРТ ---
+        loadBanners();
+        loadGames();
+
+        // Для обратной связи
+        console.log('VibeApp главная загружена');
+    </script>
+</body>
+</html>
