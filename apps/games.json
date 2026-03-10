@@ -13,5 +13,20 @@
         ],
         "orientation": "portrait",
         "gameUrl": "https://g.igroutka.ru/games/164/M8s6wA7na5cV4jIX/13/subway_surfers_greece/"
-    }
+    },
+        {
+        "id": 2,
+        "title": "Игра Бравл Старс: Симулятор Боксов",
+        "description": "Игра Бравл Старс: Симулятор Боксов — с культовым сюжетом позволяет активно кликать по экрану. Занимательный гейм на основе Brawl Stars требует от игрока собрать героев из легендарных экшенов. Коллективность тут имеет глубокое значение. Каждый игрок этого кликера способен без кодов и читов собирать крутые коллекции, продавать из них экземпляров за золотые монеты. Онлайн игра располагает красивым и комфортным интерфейсом, приятным музыкальным сопровождением, сочным визуалом. Фан версия популярной игры станет находкой для настоящих поклонников и подарит массу позитивных эмоций!",
+        "creator": " ",
+        "genre": "Simulator",
+        "icon": "https://igroutka.ru/uploads/posts/2023-05/thumbs/BoxSimulatorforBrawlStars_1683808898645ce2822354f7.54235268.jpg",
+        "screenshots": [
+            "https://subwaygame.io/wp-content/uploads/2025/10/subway-surfers-greece-2025.jpg",
+            "https://subwaygame.io/wp-content/uploads/2025/10/subway-surfers-greece-2025.jpg",
+            "https://subwaygame.io/wp-content/uploads/2025/10/subway-surfers-greece-2025.jpg"
+        ],
+        "orientation": "landscape",
+        "gameUrl": "https://igroutka.ru/loader/game/48424/"
+    },
 ]
