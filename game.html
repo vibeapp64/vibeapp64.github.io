@@ -3,188 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VibeApp | Информация об игре</title>
+    <title>VibeApp | Об игре</title>
     <style>
-        /* --- БАЗОВЫЕ СТИЛИ (ПОЛНОСТЬЮ ИЗ index.html) --- */
-        :root { /* ... все переменные темы ... */ }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { /* ... как в index.html ... */ }
-        .app-container { max-width: 500px; margin: 0 auto; width: 100%; padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
-        .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
-        .header-title { font-size: 28px; font-weight: 700; background: linear-gradient(135deg, var(--button-color) 0%, var(--accent-text-color) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; cursor: pointer; }
-        .header-badge { background: var(--secondary-bg-color); padding: 6px 12px; border-radius: 20px; font-size: 14px; color: var(--hint-color); }
-        .btn { border: none; background: var(--button-color); color: var(--button-text-color); padding: 18px 24px; border-radius: 30px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-shadow: 0 4px 12px rgba(64, 167, 227, 0.2); }
-        .btn:active { transform: scale(0.97); opacity: 0.8; }
-        .status-bar { /* ... как в index.html ... */ }
-        
-        /* --- СТИЛИ ДЛЯ СТРАНИЦЫ ИГРЫ --- */
-        .game-header-card {
-            background: var(--secondary-bg-color); border-radius: 32px; padding: 24px;
-            display: flex; flex-direction: column; align-items: center; gap: 16px;
-            border: 1px solid var(--section-separator-color);
-        }
-        .game-detail-icon {
-            width: 120px; height: 120px; border-radius: 40px; background: var(--bg-color);
-            display: flex; align-items: center; justify-content: center; font-size: 64px;
-            border: 4px solid var(--button-color); overflow: hidden;
-        }
-        .game-detail-icon img { width: 100%; height: 100%; object-fit: cover; }
-        .game-detail-title { font-size: 32px; font-weight: 700; text-align: center; }
-        .game-detail-meta {
-            display: flex; gap: 24px; color: var(--hint-color); font-size: 16px;
-            flex-wrap: wrap; justify-content: center;
-        }
-        .meta-item { display: flex; align-items: center; gap: 6px; }
-
-        .screenshots-section { margin-top: 8px; }
-        .screenshots-scroll {
-            display: flex; gap: 12px; overflow-x: auto; padding: 8px 0 16px;
-            scrollbar-width: none; -ms-overflow-style: none;
-        }
-        .screenshots-scroll::-webkit-scrollbar { display: none; }
-        .screenshot {
-            flex: 0 0 200px; height: 130px; border-radius: 20px; background: var(--bg-color);
-            object-fit: cover; border: 1px solid var(--section-separator-color);
+        /* Базовые стили - аналогично index.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .description-box {
-            background: var(--bg-color); border-radius: 20px; padding: 20px;
-            border: 1px solid var(--section-separator-color); line-height: 1.6;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.4;
+            font-size: 16px;
         }
 
-        .loading, .error { text-align: center; padding: 60px 20px; color: var(--hint-color); }
-        .error button { margin-top: 20px; width: auto; display: inline-block; padding: 12px 30px; }
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 16px 12px 80px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Кнопка назад */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
+            cursor: pointer;
+            color: var(--tg-theme-button-color, #40a7e3);
+            font-weight: 600;
+            font-size: 18px;
+            width: fit-content;
+        }
+
+        .back-button:active {
+            opacity: 0.6;
+        }
+
+        /* Шапка игры */
+        .game-header {
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 30px;
+            padding: 24px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .game-icon-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 30px;
+            object-fit: cover;
+            border: 4px solid var(--tg-theme-button-color, #40a7e3);
+            background: white;
+        }
+
+        .game-title-large {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .game-creator {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #999);
+            margin-bottom: 12px;
+        }
+
+        .game-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .meta-tag {
+            background: var(--tg-theme-bg-color, #ffffff);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid var(--tg-theme-section-separator-color);
+        }
+
+        /* Кнопка запуска */
+        .play-button {
+            background: var(--tg-theme-button-color, #40a7e3);
+            color: var(--tg-theme-button-text-color, white);
+            border: none;
+            padding: 18px;
+            border-radius: 40px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(64, 167, 227, 0.4);
+            margin: 20px 0 10px;
+            transition: all 0.2s;
+        }
+
+        .play-button:active {
+            transform: scale(0.96);
+            opacity: 0.8;
+        }
+
+        /* Скриншоты */
+        .screenshots-slider {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 4px 4px 12px;
+            scrollbar-width: none;
+        }
+
+        .screenshots-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .screenshot-item {
+            flex: 0 0 70%;
+            scroll-snap-align: start;
+            border-radius: 24px;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border: 2px solid var(--tg-theme-section-separator-color);
+        }
+
+        /* Описание */
+        .description-block {
+            background: var(--tg-theme-secondary-bg-color);
+            border-radius: 24px;
+            padding: 20px;
+            line-height: 1.6;
+            color: var(--tg-theme-text-color);
+            border: 1px solid var(--tg-theme-section-separator-color);
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .loader, .error-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--tg-theme-hint-color);
+            background: var(--tg-theme-secondary-bg-color);
+            border-radius: 30px;
+        }
+        .error-message { color: var(--tg-theme-destructive-text-color); }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Хедер с ссылкой на главную -->
-        <div class="header" onclick="goHome()">
-            <h1 class="header-title">VibeApp</h1>
-            <div class="header-badge">инфо</div>
-        </div>
-
-        <!-- Контент будет вставлен сюда -->
-        <div id="contentArea"></div>
-
-        <!-- Статус бар -->
-        <div class="status-bar" id="statusBar">
-            <div class="status-message"><span class="status-icon" id="statusIcon">✓</span><span class="status-text" id="statusText">Готово</span></div>
-            <button class="status-close" onclick="hideStatus()">✕</button>
+        <div class="back-button" onclick="goBack()">← Назад</div>
+        <div id="content">
+            <div class="loader">Загрузка игры...</div>
         </div>
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        // --- TELEGRAM ИНИЦИАЛИЗАЦИЯ ---
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.disableVerticalSwipes();
         tg.ready();
 
-        function applyTelegramTheme() { /* ... как в index.html ... */ }
-        applyTelegramTheme();
-        tg.onEvent('themeChanged', applyTelegramTheme);
-
-        // --- СТАТУС БАР (функции как в index.html) ---
-        function showStatus(message, type = 'normal') { /* ... как в index.html ... */ }
-        function hideStatus() { document.getElementById('statusBar').classList.remove('visible'); }
-
-        // --- ПОЛУЧЕНИЕ ID ИЗ URL ---
+        // Получаем ID из URL
         const urlParams = new URLSearchParams(window.location.search);
         const gameId = urlParams.get('id');
 
-        // --- ЗАГРУЗКА ДАННЫХ ИГРЫ ---
-        async function loadGameDetails() {
-            const contentArea = document.getElementById('contentArea');
-            
-            if (!gameId) {
-                contentArea.innerHTML = `<div class="error">Ошибка: ID игры не указан<br><button class="btn" onclick="goHome()">На главную</button></div>`;
-                return;
-            }
+        if (!gameId) {
+            window.location.href = 'index.html';
+        }
 
-            contentArea.innerHTML = '<div class="loading">Загрузка игры...</div>';
-
+        async function loadGame() {
             try {
                 const response = await fetch('https://raw.githubusercontent.com/vibeapp64/vibeapp64.github.io/refs/heads/main/apps/games.json');
                 const games = await response.json();
-                const game = games.find(g => g.id == gameId); // Сравниваем по id
+                const game = games.find(g => g.id == gameId);
 
-                if (!game) {
-                    contentArea.innerHTML = `<div class="error">Игра не найдена<br><button class="btn" onclick="goHome()">На главную</button></div>`;
-                    return;
-                }
+                if (!game) throw new Error('Игра не найдена');
 
-                renderGameDetails(game);
-                
+                renderGame(game);
+                tg.HapticFeedback.notificationOccurred('success');
             } catch (error) {
-                console.error('Ошибка загрузки:', error);
-                contentArea.innerHTML = `<div class="error">Ошибка загрузки данных<br><button class="btn" onclick="location.reload()">Повторить</button></div>`;
+                document.getElementById('content').innerHTML = `
+                    <div class="error-message">
+                        😵 Ошибка загрузки игры<br>
+                        <button class="play-button" style="margin-top:20px; padding:12px;" onclick="goBack()">Вернуться на главную</button>
+                    </div>
+                `;
             }
         }
 
-        function renderGameDetails(game) {
-            const contentArea = document.getElementById('contentArea');
+        function renderGame(game) {
+            const orientationEmoji = game.orientation === 'landscape' ? '🔄 Горизонтальная' : '📱 Вертикальная';
             
-            // Генерация скриншотов
-            const screenshotsHtml = game.screenshots && game.screenshots.length > 0 
-                ? game.screenshots.map(shot => `<img class="screenshot" src="${shot}" alt="screenshot" onerror="this.style.display='none'">`).join('')
-                : '<div style="color:var(--hint-color); padding:20px;">Нет скриншотов</div>';
+            const screenshotsHtml = game.screenshots?.map(src => 
+                `<img class="screenshot-item" src="${src}" alt="screenshot" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=🎮'">`
+            ).join('') || '';
 
-            contentArea.innerHTML = `
-                <!-- Карточка игры -->
-                <div class="game-header-card">
-                    <div class="game-detail-icon">
-                        <img src="${game.icon}" alt="icon" onerror="this.parentElement.innerHTML='🎮'; this.parentElement.style.fontSize='64px';">
-                    </div>
-                    <div class="game-detail-title">${game.title}</div>
-                    <div class="game-detail-meta">
-                        <span class="meta-item"><span>👤</span> ${game.creator}</span>
-                        <span class="meta-item"><span>🏷️</span> ${game.genre}</span>
-                        <span class="meta-item"><span>🔄</span> ${game.orientation === 'portrait' ? 'Вертикальная' : 'Горизонтальная'}</span>
-                    </div>
-                </div>
-
-                <!-- Скриншоты -->
-                <div class="section screenshots-section">
-                    <div class="section-header"><h2 class="section-title">Скриншоты</h2></div>
-                    <div class="section-content" style="padding-top: 0;">
-                        <div class="screenshots-scroll">
-                            ${screenshotsHtml}
+            const content = `
+                <div class="game-header">
+                    <img class="game-icon-large" src="${game.icon}" alt="${game.title}" onerror="this.src='https://via.placeholder.com/100?text=🎮'">
+                    <div>
+                        <div class="game-title-large">${game.title}</div>
+                        <div class="game-creator">${game.creator}</div>
+                        <div class="game-meta">
+                            <span class="meta-tag">🎮 ${game.genre}</span>
+                            <span class="meta-tag">${orientationEmoji}</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Описание -->
-                <div class="section">
-                    <div class="section-header"><h2 class="section-title">Описание</h2></div>
-                    <div class="section-content">
-                        <div class="description-box">${game.description}</div>
-                    </div>
-                </div>
-
-                <!-- Кнопка запуска -->
-                <button class="btn" onclick="startGame('${game.id}', '${game.orientation}')">
+                <button class="play-button" onclick="startGame(${game.id})">
                     🚀 Запустить игру
                 </button>
+
+                ${screenshotsHtml ? `
+                    <div>
+                        <div class="section-subtitle">📸 Скриншоты</div>
+                        <div class="screenshots-slider">
+                            ${screenshotsHtml}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div>
+                    <div class="section-subtitle">📝 Описание</div>
+                    <div class="description-block">
+                        ${game.description || 'Описание отсутствует.'}
+                    </div>
+                </div>
             `;
+
+            document.getElementById('content').innerHTML = content;
         }
 
-        // --- НАВИГАЦИЯ ---
-        window.goHome = () => {
+        window.startGame = (id) => {
+            tg.HapticFeedback.impactOccurred('medium');
+            window.location.href = `open.html?id=${id}`;
+        };
+
+        window.goBack = () => {
             tg.HapticFeedback.impactOccurred('light');
             window.location.href = 'index.html';
         };
 
-        window.startGame = (id, orientation) => {
-            tg.HapticFeedback.impactOccurred('medium');
-            // Сохраняем ориентацию в sessionStorage, чтобы open.html мог её прочитать
-            sessionStorage.setItem('gameOrientation', orientation);
-            window.location.href = `open.html?id=${id}`;
-        };
+        loadGame();
 
-        // --- ЗАПУСК ---
-        loadGameDetails();
+        // Тема
+        function applyTheme() {
+            const style = document.documentElement.style;
+            style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#ffffff');
+            style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#000000');
+            style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#40a7e3');
+            style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff');
+            style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color || '#f0f0f0');
+        }
+        applyTheme();
+        tg.onEvent('themeChanged', applyTheme);
     </script>
 </body>
 </html>
