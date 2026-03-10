@@ -1,1 +1,23 @@
-
+[
+    {
+        "id": 1,
+        "image": "https://kidpassage.com/images/publications/igryi-dlya-detey-6-let-doma-na-ulitse/igryi-dlya-detey-6-let-doma-na-ulitse-photo1_1304574956.jpg",
+        "title": "Летний фестиваль игр",
+        "buttonText": "Участвовать",
+        "buttonLink": "https://t.me/yourchannel"
+    },
+    {
+        "id": 2,
+        "image": "https://img.utdstc.com/screen/22e/370/22e3701f09db24384e83b4b16725f90f919aefb0ec60adc922a4ffcfbbdd41ef:400",
+        "title": "Новые поступления",
+        "buttonText": "Смотреть",
+        "buttonLink": "https://t.me/yourchannel/123"
+    },
+    {
+        "id": 3,
+        "image": "https://opis-cdn.tinkoffjournal.ru/mercury/best-match-three-cover-in.hnuv2q2nifps..jpgg",
+        "title": "Премиум игры",
+        "buttonText": "Открыть",
+        "buttonLink": "https://t.me/yourpremium"
+    }
+]
