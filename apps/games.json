@@ -28,5 +28,20 @@
         ],
         "orientation": "landscape",
         "gameUrl": "https://igroutka.ru/loader/game/48424/"
+    },
+            {
+        "id": 3,
+        "title": "Block Blast",
+        "description": "",
+        "creator": " ",
+        "genre": "Arcade",
+        "icon": "https://play-lh.googleusercontent.com/R0qgNDYYHbRhw6JFsdEbDMqONplEvJx0m0W9wzYVvY3eNF1c2rfBWYjQxW0sLEzFe1E=w240-h480-rw",
+        "screenshots": [
+            "https://subwaygame.io/wp-content/uploads/2025/10/subway-surfers-greece-2025.jpg",
+            "https://subwaygame.io/wp-content/uploads/2025/10/subway-surfers-greece-2025.jpg",
+            "https://subwaygame.io/wp-content/uploads/2025/10/subway-surfers-greece-2025.jpg"
+        ],
+        "orientation": "portrait",
+        "gameUrl": "https://block-blast.gg/blockblast"
     }
 ]
