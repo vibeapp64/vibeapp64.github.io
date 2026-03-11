@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VibeApp | Игра</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VibeApp | Запуск</title>
     <style>
         * {
             margin: 0;
@@ -12,37 +12,38 @@
         }
 
         body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: #000;
+            color: white;
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
             overflow: hidden;
-            position: fixed;
-            width: 100%;
-            height: 100%;
         }
 
-        /* Игровой контейнер на весь экран */
+        /* Контейнер для игры */
         .game-container {
-            width: 100vw;
-            height: 100vh;
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #000;
+            width: 100%;
+            height: 100dvh;
+            overflow: hidden;
             position: relative;
         }
 
-        /* Iframe игры */
         .game-frame {
+            width: 100%;
+            height: 100%;
             border: none;
-            background: #000;
-            transition: transform 0.2s ease;
+            display: block;
+            transition: opacity 0.3s ease;
         }
 
         /* Лоадер */
-        .loader-overlay {
+        .loader-container {
             position: fixed;
             top: 0;
             left: 0;
@@ -53,8 +54,9 @@
             align-items: center;
             justify-content: center;
             background: var(--tg-theme-bg-color, #1a1a1a);
-            z-index: 1000;
+            z-index: 100;
             gap: 20px;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
         .loader-spinner {
@@ -84,8 +86,8 @@
             align-items: center;
             justify-content: center;
             background: rgba(0,0,0,0.95);
-            z-index: 2000;
-            padding: 20px;
+            z-index: 200;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
         .error-card {
@@ -94,154 +96,113 @@
             border-radius: 30px;
             text-align: center;
             max-width: 300px;
-            color: var(--tg-theme-text-color);
-        }
-
-        .error-card button {
-            background: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
-            border: none;
-            padding: 14px 30px;
-            border-radius: 40px;
-            font-size: 16px;
-            font-weight: 600;
-            margin-top: 20px;
-            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="game-container" id="gameContainer">
-        <iframe class="game-frame" id="gameFrame" 
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads allow-orientation-lock"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen; web-share">
-        </iframe>
+        <iframe class="game-frame" id="gameFrame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads allow-orientation-lock" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe>
     </div>
 
-    <div class="loader-overlay" id="loader">
+    <div class="loader-container" id="loader">
         <div class="loader-spinner"></div>
         <div class="loader-text">Загружаем игру...</div>
     </div>
 
-    <div id="errorOverlay" class="error-overlay" style="display: none;">
+    <div id="errorOverlay" style="display: none;" class="error-overlay">
         <div class="error-card">
             <div style="font-size: 48px; margin-bottom: 20px;">😵</div>
             <div style="font-size: 18px; margin-bottom: 20px;">Не удалось загрузить игру</div>
-            <button onclick="goBack()">Вернуться в магазин</button>
+            <button class="telegram-button" onclick="goBack()" style="padding: 12px 24px; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; border-radius: 30px; font-size: 16px; font-weight: 600;">Вернуться</button>
         </div>
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        // ==================== ИНИЦИАЛИЗАЦИЯ TELEGRAM ====================
         const tg = window.Telegram.WebApp;
-        
-        // Настраиваем приложение на полный экран
-        tg.expand(); // Растягиваем на весь экран
-        tg.disableVerticalSwipes(); // Отключаем свайпы
+        tg.expand();
+        tg.disableVerticalSwipes();
         
         // Показываем нативную кнопку "Назад"
         tg.BackButton.show();
         tg.BackButton.onClick(() => {
-            // Сохраняем статистику перед выходом
-            savePlayTime();
+            tg.HapticFeedback.impactOccurred('light');
             window.location.href = `game.html?id=${gameId}`;
         });
-        
+
         tg.ready();
 
-        // ==================== ПОЛУЧАЕМ ID ИГРЫ ====================
         const urlParams = new URLSearchParams(window.location.search);
         const gameId = urlParams.get('id');
+        
+        const gameFrame = document.getElementById('gameFrame');
+        const loader = document.getElementById('loader');
+        const errorOverlay = document.getElementById('errorOverlay');
+
+        let currentGame = null;
+        let sessionStartTime = Date.now();
+        let adShown = false;
 
         if (!gameId) {
             window.location.href = 'index.html';
         }
 
-        // ==================== ЭЛЕМЕНТЫ ====================
-        const gameFrame = document.getElementById('gameFrame');
-        const loader = document.getElementById('loader');
-        const errorOverlay = document.getElementById('errorOverlay');
+        // ========== СТАТИСТИКА ==========
+        function getStatsKey() {
+            const user = tg.initDataUnsafe?.user;
+            const username = user?.username || user?.id || 'anonymous';
+            return `vibeapp_stats_${username}`;
+        }
 
-        // ==================== СТАТИСТИКА ====================
-        const user = tg.initDataUnsafe?.user;
-        const username = user?.username || user?.id || 'anonymous';
-        const storageKey = `vibeapp_stats_${username}_${gameId}`;
-        
-        let gameStartTime = Date.now();
-        let currentGame = null;
-
-        // Загружаем статистику
         function loadStats() {
             try {
-                const stats = localStorage.getItem(storageKey);
-                return stats ? JSON.parse(stats) : { playCount: 0, totalPlayTime: 0 };
+                const stats = localStorage.getItem(getStatsKey());
+                return stats ? JSON.parse(stats) : { launches: 0, totalTime: 0, lastSessionTime: 0 };
             } catch (e) {
-                console.log('Stats error:', e);
-                return { playCount: 0, totalPlayTime: 0 };
+                return { launches: 0, totalTime: 0, lastSessionTime: 0 };
             }
         }
 
-        // Сохраняем статистику
-        function savePlayTime() {
+        function saveStats(launch = false) {
             try {
-                const playTime = Math.floor((Date.now() - gameStartTime) / 1000); // в секундах
-                if (playTime < 1) return; // Игнорируем если меньше секунды
-
                 const stats = loadStats();
-                stats.playCount += 1;
-                stats.totalPlayTime += playTime;
-                stats.lastPlayed = Date.now();
+                if (launch) {
+                    stats.launches += 1;
+                }
+                const sessionTime = Math.floor((Date.now() - sessionStartTime) / 1000);
+                stats.totalTime += sessionTime;
+                stats.lastSessionTime = sessionTime;
+                localStorage.setItem(getStatsKey(), JSON.stringify(stats));
                 
-                localStorage.setItem(storageKey, JSON.stringify(stats));
-                console.log('Статистика сохранена:', stats);
+                console.log('📊 Статистика обновлена:', stats);
             } catch (e) {
-                console.log('Save error:', e);
+                console.log('Ошибка сохранения статистики:', e);
             }
         }
 
-        // Сохраняем при выходе
-        window.addEventListener('beforeunload', () => {
-            savePlayTime();
-        });
+        // Сохраняем время при выходе
+        window.addEventListener('beforeunload', () => saveStats());
 
-        // ==================== ЗАГРУЗКА ИГРЫ ====================
-        async function loadGame() {
+        // ========== ЗАГРУЗКА ИГРЫ ==========
+        async function loadGameData() {
             try {
-                // Сначала показываем рекламу (если нужно)
-                const showAd = Math.random() < 0.5; // 50% показов для теста
-                
-                if (showAd) {
-                    // Переходим на рекламу, а потом вернёмся сюда
-                    sessionStorage.setItem('returnToGame', gameId);
-                    window.location.href = 'ad.html';
-                    return;
-                }
-
-                // Загружаем данные игры
                 const response = await fetch('https://raw.githubusercontent.com/vibeapp64/vibeapp64.github.io/refs/heads/main/apps/games.json');
                 const games = await response.json();
                 const game = games.find(g => g.id == gameId);
-
+                
                 if (!game) throw new Error('Игра не найдена');
-
+                
                 currentGame = game;
                 
-                // Применяем ориентацию
-                applyOrientation(game.orientation);
+                // Сохраняем запуск в статистику
+                saveStats(true);
                 
-                // Загружаем игру
-                gameFrame.src = game.gameUrl;
+                // Сначала показываем рекламу
+                await showAd();
                 
-                // Таймаут на лоадер
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                }, 2000);
-
-                // Обновляем статистику при старте
-                const stats = loadStats();
-                console.log('Статистика игры:', stats);
-
+                // Затем загружаем игру
+                loadGame(game);
+                
             } catch (error) {
                 console.error('Ошибка:', error);
                 loader.style.display = 'none';
@@ -250,39 +211,219 @@
             }
         }
 
-        // ==================== ОРИЕНТАЦИЯ (ИСПРАВЛЕНО) ====================
+        // ========== РЕКЛАМА ==========
+        async function showAd() {
+            if (adShown) return;
+            
+            try {
+                // Загружаем список рекламы
+                const response = await fetch('https://raw.githubusercontent.com/vibeapp64/vibeapp64.github.io/refs/heads/main/apps/ads.json');
+                const ads = await response.json();
+                
+                // Выбираем случайное объявление
+                const randomAd = ads[Math.floor(Math.random() * ads.length)];
+                
+                // Показываем рекламу в новом окне (как модалку)
+                const adWindow = window.open('', '_blank', 'width=400,height=700');
+                if (adWindow) {
+                    adWindow.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+                            <title>Реклама</title>
+                            <style>
+                                * { margin:0; padding:0; box-sizing:border-box; }
+                                body { 
+                                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                                    background: ${randomAd.backgroundColor || '#000'};
+                                    color: white;
+                                    min-height: 100dvh;
+                                    display: flex;
+                                    flex-direction: column;
+                                    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+                                }
+                                .ad-container {
+                                    flex: 1;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    justify-content: center;
+                                    padding: 20px;
+                                }
+                                .ad-content {
+                                    width: 100%;
+                                    max-width: 400px;
+                                    border-radius: 30px;
+                                    overflow: hidden;
+                                    margin-bottom: 20px;
+                                    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                                }
+                                .ad-image, .ad-video {
+                                    width: 100%;
+                                    height: auto;
+                                    display: block;
+                                }
+                                .ad-site-frame {
+                                    width: 100%;
+                                    height: 500px;
+                                    border: none;
+                                    background: white;
+                                }
+                                .ad-title {
+                                    font-size: 24px;
+                                    font-weight: 700;
+                                    margin-bottom: 16px;
+                                    text-align: center;
+                                }
+                                .ad-button {
+                                    background: var(--tg-theme-button-color, #40a7e3);
+                                    color: var(--tg-theme-button-text-color, white);
+                                    border: none;
+                                    padding: 16px 40px;
+                                    border-radius: 40px;
+                                    font-size: 18px;
+                                    font-weight: 700;
+                                    margin-bottom: 20px;
+                                    cursor: pointer;
+                                    box-shadow: 0 10px 20px rgba(64,167,227,0.4);
+                                }
+                                .close-button {
+                                    background: rgba(255,255,255,0.2);
+                                    color: white;
+                                    border: none;
+                                    padding: 12px 30px;
+                                    border-radius: 30px;
+                                    font-size: 16px;
+                                    backdrop-filter: blur(10px);
+                                    opacity: 0.5;
+                                    pointer-events: none;
+                                    transition: opacity 0.3s;
+                                }
+                                .close-button.active {
+                                    opacity: 1;
+                                    pointer-events: auto;
+                                    cursor: pointer;
+                                }
+                                .timer {
+                                    font-size: 14px;
+                                    color: rgba(255,255,255,0.6);
+                                    margin-top: 10px;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="ad-container">
+                                <div class="ad-content">
+                                    ${randomAd.type === 'image' ? `<img class="ad-image" src="${randomAd.content}" alt="ad">` : ''}
+                                    ${randomAd.type === 'video' ? `<video class="ad-video" src="${randomAd.content}" autoplay loop muted playsinline></video>` : ''}
+                                    ${randomAd.type === 'site' ? `<iframe class="ad-site-frame" src="${randomAd.content}" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>` : ''}
+                                </div>
+                                <div class="ad-title">${randomAd.title}</div>
+                                <button class="ad-button" onclick="openLink('${randomAd.buttonLink}')">${randomAd.buttonText}</button>
+                                <button class="close-button" id="closeBtn" onclick="closeAd()">Закрыть</button>
+                                <div class="timer" id="timer">10 секунд</div>
+                            </div>
+                            <script>
+                                let seconds = 10;
+                                const closeBtn = document.getElementById('closeBtn');
+                                const timerEl = document.getElementById('timer');
+                                
+                                const interval = setInterval(() => {
+                                    seconds--;
+                                    timerEl.textContent = seconds + ' секунд';
+                                    if (seconds <= 0) {
+                                        clearInterval(interval);
+                                        closeBtn.classList.add('active');
+                                        timerEl.style.opacity = '0';
+                                    }
+                                }, 1000);
+                                
+                                window.openLink = (link) => {
+                                    window.open(link, '_blank');
+                                };
+                                
+                                window.closeAd = () => {
+                                    if (seconds <= 0) {
+                                        window.close();
+                                    }
+                                };
+                            <\/script>
+                        </body>
+                        </html>
+                    `);
+                    
+                    // Ждём закрытия рекламного окна
+                    await new Promise(resolve => {
+                        const checkClosed = setInterval(() => {
+                            if (adWindow.closed) {
+                                clearInterval(checkClosed);
+                                resolve();
+                            }
+                        }, 500);
+                    });
+                    
+                    adShown = true;
+                } else {
+                    // Если блокировщик всплывающих окон, просто продолжаем
+                    console.log('Не удалось открыть окно с рекламой');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки рекламы:', error);
+            }
+        }
+
+        // ========== ЗАГРУЗКА ИГРЫ ==========
+        function loadGame(game) {
+            // Применяем ориентацию
+            applyOrientation(game.orientation);
+            
+            // Загружаем игру в iframe
+            gameFrame.src = game.gameUrl;
+            
+            // Скрываем лоадер
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 2000);
+        }
+
+        // Применение ориентации
         function applyOrientation(orientation) {
             const container = document.getElementById('gameContainer');
             
             // Сбрасываем стили
-            gameFrame.style.transform = 'none';
-            gameFrame.style.width = '100%';
-            gameFrame.style.height = '100%';
-            gameFrame.style.maxWidth = 'none';
-            gameFrame.style.maxHeight = 'none';
-
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+            
             if (orientation === 'landscape') {
-                // Для ландшафтных игр поворачиваем на 90°
-                gameFrame.style.width = '100vh';  // Меняем местами ширину и высоту
-                gameFrame.style.height = '100vw';
-                gameFrame.style.transform = 'rotate(90deg)';
+                // Для ландшафтных игр поворачиваем контейнер
+                container.style.transform = 'rotate(90deg)';
+                container.style.width = '100vh';
+                container.style.height = '100vw';
+                container.style.position = 'absolute';
+                container.style.top = '50%';
+                container.style.left = '50%';
+                container.style.transform = 'translate(-50%, -50%) rotate(90deg)';
             } else {
-                // Для портретных — всё нормально
-                gameFrame.style.width = '100%';
-                gameFrame.style.height = '100%';
-                gameFrame.style.transform = 'none';
+                // Для портретных - нормально
+                container.style.transform = 'none';
+                container.style.width = '100%';
+                container.style.height = '100%';
+                container.style.position = 'relative';
+                container.style.top = 'auto';
+                container.style.left = 'auto';
             }
         }
 
-        // ==================== СОБЫТИЯ ====================
+        window.goBack = () => {
+            window.location.href = `game.html?id=${gameId}`;
+        };
+
+        // Когда iframe загрузился
         gameFrame.onload = () => {
             loader.style.display = 'none';
             tg.HapticFeedback.notificationOccurred('success');
-            
-            // Обновляем статистику (заход в игру)
-            const stats = loadStats();
-            stats.playCount += 0; // Увеличим при сохранении
-            gameStartTime = Date.now(); // Сбрасываем таймер
         };
 
         gameFrame.onerror = () => {
@@ -291,34 +432,20 @@
             tg.HapticFeedback.notificationOccurred('error');
         };
 
-        // ==================== НАВИГАЦИЯ ====================
-        window.goBack = () => {
-            savePlayTime();
-            window.location.href = `game.html?id=${gameId}`;
-        };
-
-        // ==================== ТЕМА ====================
+        // Применяем тему
         function applyTheme() {
             const style = document.documentElement.style;
             style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#1a1a1a');
             style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#40a7e3');
             style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff');
             style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color || '#222222');
-            style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#ffffff');
             style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color || '#999999');
-        }
-
-        // Проверяем, не вернулись ли с рекламы
-        const returnToGame = sessionStorage.getItem('returnToGame');
-        if (returnToGame && returnToGame == gameId) {
-            sessionStorage.removeItem('returnToGame');
-            // Продолжаем загрузку игры (без рекламы)
         }
 
         // Старт
         applyTheme();
         tg.onEvent('themeChanged', applyTheme);
-        loadGame();
+        loadGameData();
     </script>
 </body>
 </html>
