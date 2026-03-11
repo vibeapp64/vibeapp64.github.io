@@ -1,0 +1,19 @@
+[
+    {
+        "id": 1,
+        "type": "image",
+        "content": "https://raw.githubusercontent.com/vibeapp64/vibeapp64.github.io/refs/heads/main/assets/squadlife.jpg",
+        "title": "Squad Life - Канал по mo.co, Reversed Squad и другим новым играм Supercell",
+        "buttonText": "Подписаться",
+        "buttonLink": "https://t.me/squad_lifes",
+        "backgroundColor": "#2a5c8a"
+    },
+    {
+        "id": 2,
+        "type": "video",
+        "content": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+        "title": "Новая коллекция скинов",
+        "buttonText": "Смотреть",
+        "buttonLink": "https://t.me/vibeapp/123"
+    }
+]
